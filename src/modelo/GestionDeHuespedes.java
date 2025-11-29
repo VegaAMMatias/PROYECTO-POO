@@ -12,6 +12,7 @@ public class GestionDeHuespedes extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeHuespedes.class.getName());
     private clases.SistemaHotel sistema;
+    private javax.swing.table.DefaultTableModel modeloTabla;
 
     /**
      * Creates new form GestionDeHuespedes
@@ -24,6 +25,8 @@ public class GestionDeHuespedes extends javax.swing.JFrame {
         this.sistema = sistema;
         initComponents();
         setLocationRelativeTo(null);
+        configurarTabla();
+        cargarHuespedes("");
     }
 
     /**
@@ -157,11 +160,29 @@ public class GestionDeHuespedes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDesactivarHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesactivarHuespedActionPerformed
-    javax.swing.JOptionPane.showMessageDialog(this, "Función en construcción.");
+    int fila = tblHuespedes.getSelectedRow();
+
+    if (fila == -1) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Seleccione un huésped de la tabla.",
+                "Aviso",
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    String dni = (String) tblHuespedes.getValueAt(fila, 0);
+    clases.Huesped huesped = sistema.buscarHuespedPorDni(dni);
+
+    if (huesped != null) {
+        huesped.setEstado("INACTIVO");
+        cargarHuespedes(txtBuscarHuesped.getText());
+    }
     }//GEN-LAST:event_btnDesactivarHuespedActionPerformed
 
     private void btnNuevoHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoHuespedActionPerformed
-    RegistroDeHuespedes frm = new RegistroDeHuespedes();
+    RegistroDeHuespedes frm = new RegistroDeHuespedes(sistema, null, () -> cargarHuespedes(txtBuscarHuesped.getText()));
     frm.setLocationRelativeTo(this);
     frm.setVisible(true);
     }//GEN-LAST:event_btnNuevoHuespedActionPerformed
@@ -182,12 +203,15 @@ public class GestionDeHuespedes extends javax.swing.JFrame {
     String dni = (String) tblHuespedes.getValueAt(fila, 0);
 
 
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se editaría el huésped con DNI: " + dni,
-            "Editar huésped",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    clases.Huesped huesped = sistema.buscarHuespedPorDni(dni);
+    if (huesped == null) {
+        javax.swing.JOptionPane.showMessageDialog(this, "No se encontró el huésped seleccionado.");
+        return;
+    }
+
+    RegistroDeHuespedes frm = new RegistroDeHuespedes(sistema, huesped, () -> cargarHuespedes(txtBuscarHuesped.getText()));
+    frm.setLocationRelativeTo(this);
+    frm.setVisible(true);
     }//GEN-LAST:event_btnEditarHuespedActionPerformed
 
     private void btnVolverHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverHuespedActionPerformed
@@ -196,24 +220,48 @@ public class GestionDeHuespedes extends javax.swing.JFrame {
 
     private void btnBuscarHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarHuespedActionPerformed
  String texto = txtBuscarHuesped.getText().trim();
+    cargarHuespedes(texto);
+    }//GEN-LAST:event_btnBuscarHuespedActionPerformed
 
-    if (texto.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Ingrese un DNI, nombre o apellido para buscar.",
-                "Aviso",
-                javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-        return;
+    private void configurarTabla() {
+        modeloTabla = new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"DNI", "APELLIDOS", "NOMBRES", "TELEFONO", "EMAIL", "ESTADO"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblHuespedes.setModel(modeloTabla);
     }
 
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se buscaría al huésped con: " + texto,
-            "Buscar huésped",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
-    }//GEN-LAST:event_btnBuscarHuespedActionPerformed
+    private void cargarHuespedes(String filtro) {
+        modeloTabla.setRowCount(0);
+        String texto = filtro == null ? "" : filtro.toLowerCase();
+
+        for (clases.Huesped h : sistema.getHuespedes()) {
+            if (h == null) {
+                continue;
+            }
+
+            boolean coincide = texto.isBlank()
+                    || h.getDni().toLowerCase().contains(texto)
+                    || h.getNombres().toLowerCase().contains(texto)
+                    || h.getApellidos().toLowerCase().contains(texto);
+
+            if (coincide) {
+                modeloTabla.addRow(new Object[]{
+                        h.getDni(),
+                        h.getApellidos(),
+                        h.getNombres(),
+                        h.getContacto(),
+                        h.getEmail(),
+                        h.getEstado()
+                });
+            }
+        }
+    }
 
     /**
      * @param args the command line arguments

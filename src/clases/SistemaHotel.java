@@ -104,6 +104,15 @@ public class SistemaHotel {
         return null;
     }
 
+    public ServicioAdicional buscarServicioPorNombre(String nombre) {
+        for (ServicioAdicional servicio : servicios) {
+            if (servicio != null && servicio.getNombre().equalsIgnoreCase(nombre)) {
+                return servicio;
+            }
+        }
+        return null;
+    }
+
     public Huesped[] getHuespedes() {
         return huespedes;
     }

@@ -12,6 +12,7 @@ public class GestionDeServiciosAdicionales extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeServiciosAdicionales.class.getName());
     private clases.SistemaHotel sistema;
+    private javax.swing.table.DefaultTableModel modeloTabla;
 
     /**
      * Creates new form GestionDeServiciosAdicionales
@@ -24,6 +25,8 @@ public class GestionDeServiciosAdicionales extends javax.swing.JFrame {
         this.sistema = sistema;
         initComponents();
         setLocationRelativeTo(null);
+        configurarTabla();
+        cargarServicios("");
     }
 
     /**
@@ -170,19 +173,17 @@ public class GestionDeServiciosAdicionales extends javax.swing.JFrame {
         return;
     }
 
-    String codigo = (String) tblServicios.getValueAt(fila, 0);
+    String nombre = (String) tblServicios.getValueAt(fila, 0);
+    clases.ServicioAdicional servicio = sistema.buscarServicioPorNombre(nombre);
 
-    // Más adelante: buscar en SistemaHotel y marcarlo como inactivo
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se marcaría como INACTIVO el servicio: " + codigo,
-            "Desactivar servicio",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    if (servicio != null) {
+        servicio.setEstado("INACTIVO");
+        cargarServicios(txtBuscarServicio.getText());
+    }
     }//GEN-LAST:event_btnDesactivarServicioActionPerformed
 
     private void btnNuevoServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoServicioActionPerformed
-    RegistroDeServicio frm = new RegistroDeServicio();
+    RegistroDeServicio frm = new RegistroDeServicio(sistema, null, () -> cargarServicios(txtBuscarServicio.getText()));
     frm.setLocationRelativeTo(this);
     frm.setVisible(true);
     }//GEN-LAST:event_btnNuevoServicioActionPerformed
@@ -200,41 +201,62 @@ public class GestionDeServiciosAdicionales extends javax.swing.JFrame {
         return;
     }
 
-    String codigo = (String) tblServicios.getValueAt(fila, 0);
+    String nombre = (String) tblServicios.getValueAt(fila, 0);
+    clases.ServicioAdicional servicio = sistema.buscarServicioPorNombre(nombre);
 
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se editaría el servicio con código: " + codigo,
-            "Editar servicio",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    if (servicio == null) {
+        javax.swing.JOptionPane.showMessageDialog(this, "No se encontró el servicio seleccionado.");
+        return;
+    }
+
+    RegistroDeServicio frm = new RegistroDeServicio(sistema, servicio, () -> cargarServicios(txtBuscarServicio.getText()));
+    frm.setLocationRelativeTo(this);
+    frm.setVisible(true);
     }//GEN-LAST:event_btnEditarServicioActionPerformed
 
     private void btnBuscarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarServicioActionPerformed
     String texto = txtBuscarServicio.getText().trim();
-
-    if (texto.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Ingrese un código o nombre para buscar.",
-                "Aviso",
-                javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-        return;
-    }
-
-    // Más adelante: filtrar tabla con datos de SistemaHotel
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se filtraría la tabla usando: " + texto,
-            "Buscar servicio",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    cargarServicios(texto);
     }//GEN-LAST:event_btnBuscarServicioActionPerformed
 
     private void btnVolverServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverServicioActionPerformed
     this.dispose();
     }//GEN-LAST:event_btnVolverServicioActionPerformed
+
+    private void configurarTabla() {
+        modeloTabla = new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"NOMBRE", "PRECIO", "ESTADO"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblServicios.setModel(modeloTabla);
+    }
+
+    private void cargarServicios(String filtro) {
+        modeloTabla.setRowCount(0);
+        String texto = filtro == null ? "" : filtro.toLowerCase();
+
+        for (clases.ServicioAdicional s : sistema.getServicios()) {
+            if (s == null) {
+                continue;
+            }
+
+            boolean coincide = texto.isBlank()
+                    || s.getNombre().toLowerCase().contains(texto);
+
+            if (coincide) {
+                modeloTabla.addRow(new Object[]{
+                        s.getNombre(),
+                        s.getPrecio(),
+                        s.getEstado()
+                });
+            }
+        }
+    }
 
     /**
      * @param args the command line arguments
