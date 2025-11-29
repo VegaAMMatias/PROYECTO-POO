@@ -9,14 +9,21 @@ package modelo;
  * @author Chris
  */
 public class GestionDeHuespedes extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeHuespedes.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form GestionDeHuespedes
      */
     public GestionDeHuespedes() {
+        this(new clases.SistemaHotel());
+    }
+
+    public GestionDeHuespedes(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

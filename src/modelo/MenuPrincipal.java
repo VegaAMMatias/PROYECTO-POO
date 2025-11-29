@@ -203,7 +203,7 @@ public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnHabitacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabitacionesActionPerformed
-    GestionDeHabitaciones g = new GestionDeHabitaciones();
+    GestionDeHabitaciones g = new GestionDeHabitaciones(sistema);
     g.setLocationRelativeTo(this); 
     g.setVisible(true);
     }//GEN-LAST:event_btnHabitacionesActionPerformed
@@ -216,37 +216,37 @@ public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpleadosActionPerformed
-    GestionDeEmpleados g = new GestionDeEmpleados();
+    GestionDeEmpleados g = new GestionDeEmpleados(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnEmpleadosActionPerformed
 
     private void btnHuespedesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuespedesActionPerformed
-      GestionDeHuespedes g = new GestionDeHuespedes();
+      GestionDeHuespedes g = new GestionDeHuespedes(sistema);
       g.setLocationRelativeTo(this);
       g.setVisible(true);
     }//GEN-LAST:event_btnHuespedesActionPerformed
 
     private void btnReservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservasActionPerformed
-    GestionDeReservas g = new GestionDeReservas();
+    GestionDeReservas g = new GestionDeReservas(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnReservasActionPerformed
 
     private void btnServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServiciosActionPerformed
-    GestionDeServiciosAdicionales g = new GestionDeServiciosAdicionales();
+    GestionDeServiciosAdicionales g = new GestionDeServiciosAdicionales(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnServiciosActionPerformed
 
     private void btnCheckInOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckInOutActionPerformed
-    CheckInOut c = new CheckInOut();
+    CheckInOut c = new CheckInOut(sistema);
     c.setLocationRelativeTo(this);
     c.setVisible(true);
     }//GEN-LAST:event_btnCheckInOutActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-    REPORTE r = new REPORTE();
+    REPORTE r = new REPORTE(sistema);
     r.setLocationRelativeTo(this);
     r.setVisible(true);
     }//GEN-LAST:event_btnReportesActionPerformed

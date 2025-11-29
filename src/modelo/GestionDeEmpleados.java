@@ -1,16 +1,22 @@
 package modelo;
 
 public class GestionDeEmpleados extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeEmpleados.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form GestionDeEmpleados
      */
-public GestionDeEmpleados() {
-    initComponents();
-    setLocationRelativeTo(null);
-}
+    public GestionDeEmpleados() {
+        this(new clases.SistemaHotel());
+    }
+
+    public GestionDeEmpleados(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
+        initComponents();
+        setLocationRelativeTo(null);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -181,7 +187,7 @@ public GestionDeEmpleados() {
     }//GEN-LAST:event_btnVolverEmpleadoActionPerformed
 
     private void btnNuevoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEmpleadoActionPerformed
-    RegistroDeEmpleados frm = new RegistroDeEmpleados();
+    RegistroDeEmpleados frm = new RegistroDeEmpleados(sistema);
     frm.setLocationRelativeTo(this);  // centrar respecto a esta ventana
     frm.setVisible(true);
     }//GEN-LAST:event_btnNuevoEmpleadoActionPerformed
