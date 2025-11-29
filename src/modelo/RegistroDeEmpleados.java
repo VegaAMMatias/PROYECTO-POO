@@ -178,13 +178,14 @@ public class RegistroDeEmpleados extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarEmpleadoActionPerformed
- String dni = txtDniEmpleado.getText().trim();
+    String dni = txtDniEmpleado.getText().trim();
+    String usuario = txtUsuarioEmpleado.getText().trim();
     String nombres = txtNombresEmpleado.getText().trim();
     String apellidos = txtApellidosEmpleado.getText().trim();
     String clave = txtPasswordEmpleado.getText().trim();
     String rol = cmbRolEmpleado.getSelectedItem().toString();
 
-    if(dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || clave.isEmpty()) {
+    if(dni.isEmpty() || usuario.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || clave.isEmpty()) {
         javax.swing.JOptionPane.showMessageDialog(
                 this,
                 "Complete todos los campos obligatorios.",
@@ -205,6 +206,7 @@ public class RegistroDeEmpleados extends javax.swing.JFrame {
     }
 
     Empleado nuevo = new Empleado(dni, nombres, apellidos, rol);
+    nuevo.setUsuario(usuario);
     nuevo.setPassword(clave);
     sistema.agregarEmpleado(nuevo);
 

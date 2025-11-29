@@ -19,8 +19,8 @@ public EditarEmpleado(Empleado empleado) {
         txtDniEmpleado.setText(empleado.getDni());
         txtNombresEmpleado.setText(empleado.getNombres());
         txtApellidosEmpleado.setText(empleado.getApellidos());
-        // En tu diseño, el usuario de login es el DNI:
-        txtUsuarioEmpleado.setText(empleado.getDni());
+        String usuario = empleado.getUsuario() != null ? empleado.getUsuario() : empleado.getDni();
+        txtUsuarioEmpleado.setText(usuario);
         txtPasswordEmpleado.setText(empleado.getPassword());
 
         // Rol viene como "ADMINISTRADOR" o "RECEPCIONISTA"
@@ -229,6 +229,7 @@ public EditarEmpleado(Empleado empleado) {
     empleadoEditado.setDni(dni);
     empleadoEditado.setNombres(nombres);
     empleadoEditado.setApellidos(apellidos);
+    empleadoEditado.setUsuario(txtUsuarioEmpleado.getText().trim());
     empleadoEditado.setPassword(clave);
 
     if ("Administrador".equalsIgnoreCase(rolCombo)) {
