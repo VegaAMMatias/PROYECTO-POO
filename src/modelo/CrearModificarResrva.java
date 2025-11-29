@@ -8,14 +8,22 @@ package modelo;
  * @author Chris
  */
 public class CrearModificarResrva extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CrearModificarResrva.class.getName());
+    private final clases.SistemaHotel sistema;
+    private final clases.Reservacion reservacion;
 
     /**
      * Creates new form CrearModificarResrva
      */
-    public CrearModificarResrva() {
+    public CrearModificarResrva(clases.SistemaHotel sistema, clases.Reservacion reservacion) {
+        if (sistema == null) {
+            throw new IllegalArgumentException("El sistema no puede ser nulo");
+        }
+        this.sistema = sistema;
+        this.reservacion = reservacion;
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -248,7 +256,10 @@ public class CrearModificarResrva extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new CrearModificarResrva().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            clases.SistemaHotel sistema = new clases.SistemaHotel(100, 100, 100, 100, 100, 100);
+            new CrearModificarResrva(sistema, null).setVisible(true);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

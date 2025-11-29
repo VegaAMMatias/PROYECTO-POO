@@ -13,6 +13,9 @@ public class InicioDeSesion extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(InicioDeSesion.class.getName());
 
 public InicioDeSesion(SistemaHotel sistema) {
+    if (sistema == null) {
+        throw new IllegalArgumentException("El sistema no puede ser nulo");
+    }
     this.sistema = sistema;
     initComponents();
     this.getContentPane().setBackground(new java.awt.Color(173, 216, 230)); // Ejemplo: Azul claro
