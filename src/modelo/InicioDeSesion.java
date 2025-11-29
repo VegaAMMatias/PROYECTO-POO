@@ -8,16 +8,19 @@ import java.awt.Color;
 public class InicioDeSesion extends javax.swing.JFrame {
 
     private SistemaHotel sistema;
-    
+
     private static final java.util.logging.Logger logger =
             java.util.logging.Logger.getLogger(InicioDeSesion.class.getName());
 
-public InicioDeSesion(SistemaHotel sistema) {
-    this.sistema = sistema;
-    initComponents();
-    this.getContentPane().setBackground(new java.awt.Color(173, 216, 230)); // Ejemplo: Azul claro
-    setLocationRelativeTo(null);
-}
+    public InicioDeSesion(SistemaHotel sistema) {
+        if (sistema == null) {
+            throw new IllegalArgumentException("El sistema no puede ser nulo");
+        }
+        this.sistema = sistema;
+        initComponents();
+        this.getContentPane().setBackground(new java.awt.Color(173, 216, 230)); // Ejemplo: Azul claro
+        setLocationRelativeTo(null);
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -35,6 +38,7 @@ public InicioDeSesion(SistemaHotel sistema) {
         txtPasswordLogin = new javax.swing.JPasswordField();
         btnIniciarSesion = new javax.swing.JToggleButton();
         lblMensajeLogin = new javax.swing.JLabel();
+        btnRegistrarEmpleado = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -75,6 +79,13 @@ public InicioDeSesion(SistemaHotel sistema) {
             }
         });
 
+        btnRegistrarEmpleado.setText("Registrar empleado");
+        btnRegistrarEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarEmpleadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,8 +108,10 @@ public InicioDeSesion(SistemaHotel sistema) {
                         .addGap(182, 182, 182)
                         .addComponent(lblMensajeLogin))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(164, 164, 164)
-                        .addComponent(btnIniciarSesion)))
+                        .addGap(132, 132, 132)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnRegistrarEmpleado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnIniciarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(96, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -115,6 +128,8 @@ public InicioDeSesion(SistemaHotel sistema) {
                     .addComponent(txtPasswordLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addComponent(btnIniciarSesion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRegistrarEmpleado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMensajeLogin)
                 .addContainerGap(90, Short.MAX_VALUE))
@@ -130,28 +145,26 @@ public InicioDeSesion(SistemaHotel sistema) {
         if (dni.isEmpty() || clave.isEmpty()) {
             lblMensajeLogin.setText("Ingrese usuario y contraseña");
             return;
-}
-
-Empleado emp = sistema.autenticarEmpleado(dni, clave);
-
-if (emp == null) {
-    lblMensajeLogin.setText("Datos incorrectos");
-    return;
-}
-
-        if (emp != null) {
-            // INICIO DE SESIÓN EXITOSO
-            // Obtener los datos del empleado autenticado
-            String usuarioConectado = emp.getNombres() + " " + emp.getApellidos(); // Mejor mostrar el nombre
-            String rolEmpleado = emp.getRol();
-
-            // Abrir el Menú Principal, pasándole el objeto 'sistema' y los datos del usuario
-            MenuPrincipal menu = new MenuPrincipal(sistema, usuarioConectado, rolEmpleado);
-
-            menu.setVisible(true); // Mostrar la ventana del menú
-            this.dispose(); // Cerrar la ventana de inicio de sesión
-            lblMensajeLogin.setText("Bienvenido " + usuarioConectado);
         }
+
+        Empleado emp = sistema.autenticarEmpleado(dni, clave);
+
+        if (emp == null) {
+            lblMensajeLogin.setText("Datos incorrectos");
+            return;
+        }
+
+        // INICIO DE SESIÓN EXITOSO
+        // Obtener los datos del empleado autenticado
+        String usuarioConectado = emp.getNombres() + " " + emp.getApellidos(); // Mejor mostrar el nombre
+        String rolEmpleado = emp.getRol();
+
+        // Abrir el Menú Principal, pasándole el objeto 'sistema' y los datos del usuario
+        MenuPrincipal menu = new MenuPrincipal(sistema, usuarioConectado, rolEmpleado);
+
+        menu.setVisible(true); // Mostrar la ventana del menú
+        this.dispose(); // Cerrar la ventana de inicio de sesión
+        lblMensajeLogin.setText("Bienvenido " + usuarioConectado);
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void txtPasswordLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordLoginActionPerformed
@@ -161,6 +174,12 @@ if (emp == null) {
     private void txtUsuarioLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioLoginActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioLoginActionPerformed
+
+    private void btnRegistrarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarEmpleadoActionPerformed
+        RegistroDeEmpleados registro = new RegistroDeEmpleados(sistema);
+        registro.setLocationRelativeTo(this);
+        registro.setVisible(true);
+    }//GEN-LAST:event_btnRegistrarEmpleadoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,6 +215,7 @@ if (emp == null) {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton btnRegistrarEmpleado;
     private javax.swing.JLabel lblMensajeLogin;
     private javax.swing.JPasswordField txtPasswordLogin;
     private javax.swing.JTextField txtUsuarioLogin;
