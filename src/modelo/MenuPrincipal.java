@@ -1,23 +1,19 @@
 package modelo;
 
 import clases.SistemaHotel;
+import javax.swing.JOptionPane;
 
 public class MenuPrincipal extends javax.swing.JFrame {
     
 private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuPrincipal.class.getName());
 private SistemaHotel sistema;
 
-public MenuPrincipal() {
-    initComponents();
-    setLocationRelativeTo(null); 
-}
-public MenuPrincipal(String dni, String rol) {
-    this();
-}
-
 public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
     initComponents();
-    setLocationRelativeTo(null);    
+    setLocationRelativeTo(null);
+    if (sistema == null) {
+        throw new IllegalArgumentException("El sistema no puede ser nulo");
+    }
     this.sistema = sistema;
     lblUsuarioSesion.setText(usuario);
     lblRolSesion.setText(rol);
@@ -204,7 +200,7 @@ public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
 
     private void btnHabitacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabitacionesActionPerformed
     GestionDeHabitaciones g = new GestionDeHabitaciones(sistema);
-    g.setLocationRelativeTo(this); 
+    g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnHabitacionesActionPerformed
 
@@ -216,40 +212,68 @@ public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpleadosActionPerformed
+    if (sistema == null) {
+        mostrarErrorSistema();
+        return;
+    }
     GestionDeEmpleados g = new GestionDeEmpleados(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnEmpleadosActionPerformed
 
     private void btnHuespedesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuespedesActionPerformed
+      if (sistema == null) {
+          mostrarErrorSistema();
+          return;
+      }
       GestionDeHuespedes g = new GestionDeHuespedes(sistema);
       g.setLocationRelativeTo(this);
       g.setVisible(true);
     }//GEN-LAST:event_btnHuespedesActionPerformed
 
     private void btnReservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservasActionPerformed
+    if (sistema == null) {
+        mostrarErrorSistema();
+        return;
+    }
     GestionDeReservas g = new GestionDeReservas(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnReservasActionPerformed
 
     private void btnServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServiciosActionPerformed
+    if (sistema == null) {
+        mostrarErrorSistema();
+        return;
+    }
     GestionDeServiciosAdicionales g = new GestionDeServiciosAdicionales(sistema);
     g.setLocationRelativeTo(this);
     g.setVisible(true);
     }//GEN-LAST:event_btnServiciosActionPerformed
 
     private void btnCheckInOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckInOutActionPerformed
+    if (sistema == null) {
+        mostrarErrorSistema();
+        return;
+    }
     CheckInOut c = new CheckInOut(sistema);
     c.setLocationRelativeTo(this);
     c.setVisible(true);
     }//GEN-LAST:event_btnCheckInOutActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+    if (sistema == null) {
+        mostrarErrorSistema();
+        return;
+    }
     REPORTE r = new REPORTE(sistema);
     r.setLocationRelativeTo(this);
     r.setVisible(true);
     }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void mostrarErrorSistema() {
+        JOptionPane.showMessageDialog(this, "No se ha inicializado el sistema", "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     /**
      * @param args the command line arguments
@@ -273,7 +297,12 @@ public MenuPrincipal(SistemaHotel sistema, String usuario, String rol) {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MenuPrincipal().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            SistemaHotel sistema = new SistemaHotel(100, 100, 100, 100, 100, 100);
+            InicioDeSesion login = new InicioDeSesion(sistema);
+            login.setLocationRelativeTo(null);
+            login.setVisible(true);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

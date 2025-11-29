@@ -16,14 +16,15 @@ public class GestionDeReservas extends javax.swing.JFrame {
     /**
      * Creates new form GestionDeReservas
      */
-    public GestionDeReservas() {
-        this(new clases.SistemaHotel());
-    }
-
     public GestionDeReservas(clases.SistemaHotel sistema) {
+        if (sistema == null) {
+            throw new IllegalArgumentException("El sistema no puede ser nulo");
+        }
         this.sistema = sistema;
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        cargarReservas(sistema.getReservaciones());
     }
 
     /**
@@ -159,8 +160,14 @@ public class GestionDeReservas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNuevaReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaReservaActionPerformed
-    CrearModificarResrva frm = new CrearModificarResrva();  // modo "nueva"
+    CrearModificarResrva frm = new CrearModificarResrva(sistema, null);  // modo "nueva"
     frm.setLocationRelativeTo(this);
+    frm.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent e) {
+            cargarReservas(sistema.getReservaciones());
+        }
+    });
     frm.setVisible(true);
     }//GEN-LAST:event_btnNuevaReservaActionPerformed
 
@@ -178,13 +185,26 @@ public class GestionDeReservas extends javax.swing.JFrame {
 
     // Más adelante usaremos el código para buscar la reservación real
     String codigo = (String) tblReservas.getValueAt(fila, 0);
+    clases.Reservacion seleccionada = buscarReservacion(codigo);
+    if (seleccionada == null) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "No se encontró la reserva seleccionada.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
 
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se editaría la reserva con código: " + codigo,
-            "Editar reserva",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    CrearModificarResrva frm = new CrearModificarResrva(sistema, seleccionada);
+    frm.setLocationRelativeTo(this);
+    frm.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent e) {
+            cargarReservas(sistema.getReservaciones());
+        }
+    });
+    frm.setVisible(true);
     }//GEN-LAST:event_btnModificarReservaActionPerformed
 
     private void btnCancelarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarReservaActionPerformed
@@ -200,10 +220,23 @@ public class GestionDeReservas extends javax.swing.JFrame {
     }
 
     String codigo = (String) tblReservas.getValueAt(fila, 0);
+    clases.Reservacion seleccionada = buscarReservacion(codigo);
+    if (seleccionada == null) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "No se encontró la reserva seleccionada.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+
+    seleccionada.setEstado("CANCELADA");
+    cargarReservas(sistema.getReservaciones());
 
     javax.swing.JOptionPane.showMessageDialog(
             this,
-            "Aquí se marcaría como CANCELADA la reserva " + codigo,
+            "La reserva " + codigo + " fue cancelada.",
             "Cancelar reserva",
             javax.swing.JOptionPane.INFORMATION_MESSAGE
     );
@@ -221,12 +254,21 @@ public class GestionDeReservas extends javax.swing.JFrame {
         return;
     }
 
-    javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Aquí se filtraría la tabla usando: " + texto,
-            "Buscar reserva",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-    );
+    java.util.List<clases.Reservacion> filtradas = new java.util.ArrayList<>();
+    for (clases.Reservacion r : sistema.getReservaciones()) {
+        if (r == null) {
+            continue;
+        }
+        String huesped = r.getHuesped() != null
+                ? (r.getHuesped().getDni() + " " + r.getHuesped().getApellidos() + " " + r.getHuesped().getNombres())
+                : "";
+        String cadena = (r.getCodigo() + " " + huesped).toLowerCase();
+        if (cadena.contains(texto.toLowerCase())) {
+            filtradas.add(r);
+        }
+    }
+
+    cargarReservas(filtradas.toArray(new clases.Reservacion[0]));
     }//GEN-LAST:event_btnBuscarReservaActionPerformed
 
     private void btnVolverReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverReservaActionPerformed
@@ -255,7 +297,47 @@ public class GestionDeReservas extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new GestionDeReservas().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            clases.SistemaHotel sistema = new clases.SistemaHotel(100, 100, 100, 100, 100, 100);
+            new GestionDeReservas(sistema).setVisible(true);
+        });
+    }
+
+    private void cargarReservas(clases.Reservacion[] reservaciones) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblReservas.getModel();
+        model.setRowCount(0);
+        if (reservaciones == null) {
+            return;
+        }
+
+        for (clases.Reservacion r : reservaciones) {
+            if (r == null) {
+                continue;
+            }
+            String huesped = r.getHuesped() != null
+                    ? r.getHuesped().getApellidos() + ", " + r.getHuesped().getNombres()
+                    : "";
+            model.addRow(new Object[]{
+                    r.getCodigo(),
+                    huesped,
+                    r.getTipoHabitacion(),
+                    r.getFechaInicio(),
+                    r.getFechaFin(),
+                    r.getEstado()
+            });
+        }
+    }
+
+    private clases.Reservacion buscarReservacion(String codigo) {
+        if (codigo == null) {
+            return null;
+        }
+        for (clases.Reservacion r : sistema.getReservaciones()) {
+            if (r != null && codigo.equals(r.getCodigo())) {
+                return r;
+            }
+        }
+        return null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
