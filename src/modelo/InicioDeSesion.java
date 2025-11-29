@@ -142,22 +142,16 @@ if (emp == null) {
         if (emp != null) {
             // INICIO DE SESIÓN EXITOSO
             // Obtener los datos del empleado autenticado
-        String usuarioConectado = emp.getNombres() + " " + emp.getApellidos(); // Mejor mostrar el nombre
-        String rolEmpleado = emp.getRol();
-        
-        // Abrir el Menú Principal, pasándole el objeto 'sistema' y los datos del usuario
-        MenuPrincipal menu = new MenuPrincipal(sistema, usuarioConectado, rolEmpleado); 
-        
-        menu.setVisible(true); // Mostrar la ventana del menú
-        this.dispose(); // Cerrar la ventana de inicio de sesión
-            
+            String usuarioConectado = emp.getNombres() + " " + emp.getApellidos(); // Mejor mostrar el nombre
+            String rolEmpleado = emp.getRol();
+
+            // Abrir el Menú Principal, pasándole el objeto 'sistema' y los datos del usuario
+            MenuPrincipal menu = new MenuPrincipal(sistema, usuarioConectado, rolEmpleado);
+
+            menu.setVisible(true); // Mostrar la ventana del menú
+            this.dispose(); // Cerrar la ventana de inicio de sesión
+            lblMensajeLogin.setText("Bienvenido " + usuarioConectado);
         }
-
-lblMensajeLogin.setText("Bienvenido " + emp.getNombres());
-
-MenuPrincipal menu = new MenuPrincipal(emp.getDni(), emp.getRol());
-menu.setVisible(true);
-this.dispose();
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void txtPasswordLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordLoginActionPerformed

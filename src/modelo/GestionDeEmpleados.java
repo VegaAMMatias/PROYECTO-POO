@@ -1,5 +1,10 @@
 package modelo;
 
+import clases.Empleado;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.table.DefaultTableModel;
+
 public class GestionDeEmpleados extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeEmpleados.class.getName());
@@ -16,6 +21,7 @@ public class GestionDeEmpleados extends javax.swing.JFrame {
         this.sistema = sistema;
         initComponents();
         setLocationRelativeTo(null);
+        cargarTablaEmpleados(sistema.getEmpleados());
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -180,6 +186,26 @@ public class GestionDeEmpleados extends javax.swing.JFrame {
 
     private void btnBuscarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpleadoActionPerformed
     String texto = txtBuscarEmpleado.getText().trim();
+    if (texto.isEmpty()) {
+        cargarTablaEmpleados(sistema.getEmpleados());
+        return;
+    }
+
+    Empleado[] empleados = sistema.getEmpleados();
+    java.util.List<Empleado> filtrados = new java.util.ArrayList<>();
+    if (empleados != null) {
+        for (Empleado emp : empleados) {
+            if (emp == null) {
+                continue;
+            }
+            String cadena = (emp.getDni() + " " + emp.getApellidos() + " " + emp.getNombres()).toLowerCase();
+            if (cadena.contains(texto.toLowerCase())) {
+                filtrados.add(emp);
+            }
+        }
+    }
+
+    cargarTablaEmpleados(filtrados.toArray(new Empleado[0]));
     }//GEN-LAST:event_btnBuscarEmpleadoActionPerformed
 
     private void btnVolverEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverEmpleadoActionPerformed
@@ -189,6 +215,12 @@ public class GestionDeEmpleados extends javax.swing.JFrame {
     private void btnNuevoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEmpleadoActionPerformed
     RegistroDeEmpleados frm = new RegistroDeEmpleados(sistema);
     frm.setLocationRelativeTo(this);  // centrar respecto a esta ventana
+    frm.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            cargarTablaEmpleados(sistema.getEmpleados());
+        }
+    });
     frm.setVisible(true);
     }//GEN-LAST:event_btnNuevoEmpleadoActionPerformed
 
@@ -204,9 +236,28 @@ public class GestionDeEmpleados extends javax.swing.JFrame {
         );
         return;
     }
-    
-    EditarEmpleado frm = new EditarEmpleado();  
+
+    String dni = (String) tblEmpleados.getValueAt(fila, 0);
+
+    Empleado seleccionado = sistema.buscarEmpleado(dni);
+    if (seleccionado == null) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "No se pudo recuperar la información del empleado.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+
+    EditarEmpleado frm = new EditarEmpleado(seleccionado);
     frm.setLocationRelativeTo(this);
+    frm.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            cargarTablaEmpleados(sistema.getEmpleados());
+        }
+    });
     frm.setVisible(true);
     }//GEN-LAST:event_btnEditarEmpleadoActionPerformed
 
@@ -225,13 +276,51 @@ public class GestionDeEmpleados extends javax.swing.JFrame {
     
     String dni = (String) tblEmpleados.getValueAt(fila, 0);
     
+    Empleado encontrado = sistema.buscarEmpleado(dni);
+    if (encontrado == null) {
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "No se encontró el empleado seleccionado.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+
+    encontrado.setEstado("INACTIVO");
+    cargarTablaEmpleados(sistema.getEmpleados());
+
     javax.swing.JOptionPane.showMessageDialog(
             this,
-            "Aquí desactivaríamos al empleado con DNI: " + dni,
+            "Empleado desactivado.",
             "Info",
             javax.swing.JOptionPane.INFORMATION_MESSAGE
     );
     }//GEN-LAST:event_btnDesactivarEmpleadoActionPerformed
+
+    private void cargarTablaEmpleados(Empleado[] empleados) {
+        DefaultTableModel model = (DefaultTableModel) tblEmpleados.getModel();
+        model.setRowCount(0);
+
+        if (empleados == null) {
+            return;
+        }
+
+        for (Empleado emp : empleados) {
+            if (emp == null) {
+                continue;
+            }
+            String usuario = emp.getDni();
+            model.addRow(new Object[]{
+                emp.getDni(),
+                emp.getApellidos(),
+                emp.getNombres(),
+                usuario,
+                emp.getRol(),
+                emp.getEstado()
+            });
+        }
+    }
 
     /**
      * @param args the command line arguments

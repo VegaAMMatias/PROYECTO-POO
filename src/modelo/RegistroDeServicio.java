@@ -12,12 +12,28 @@ import clases.ServicioAdicional;
 public class RegistroDeServicio extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistroDeServicio.class.getName());
+    private clases.SistemaHotel sistema;
+    private ServicioAdicional servicioEditar;
+    private Runnable onGuardado;
 
     /**
      * Creates new form RegistroDeServicio
      */
     public RegistroDeServicio() {
+        this(new clases.SistemaHotel(), null, null);
+    }
+
+    public RegistroDeServicio(clases.SistemaHotel sistema, ServicioAdicional servicioEditar, Runnable onGuardado) {
         initComponents();
+        setLocationRelativeTo(null);
+        this.sistema = sistema;
+        this.servicioEditar = servicioEditar;
+        this.onGuardado = onGuardado;
+
+        if (servicioEditar != null) {
+            txtNombreServicio.setText(servicioEditar.getNombre());
+            txtPrecioServicio.setText(String.valueOf(servicioEditar.getPrecio()));
+        }
     }
 
     /**
@@ -152,11 +168,42 @@ public class RegistroDeServicio extends javax.swing.JFrame {
         return;
     }
 
-    ServicioAdicional serv = new ServicioAdicional(nombre, precio);
+    if (servicioEditar == null) {
+        if (sistema.buscarServicioPorNombre(nombre) != null) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Ya existe un servicio con ese nombre.",
+                    "Aviso",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        ServicioAdicional serv = new ServicioAdicional(nombre, precio);
+        sistema.agregarServicio(serv);
+    } else {
+        ServicioAdicional existente = sistema.buscarServicioPorNombre(nombre);
+        if (existente != null && existente != servicioEditar) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "El nombre ingresado pertenece a otro servicio.",
+                    "Aviso",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        servicioEditar.setNombre(nombre);
+        servicioEditar.setPrecio(precio);
+    }
+
+    if (onGuardado != null) {
+        onGuardado.run();
+    }
 
     javax.swing.JOptionPane.showMessageDialog(
             this,
-            "Servicio registrado en memoria (falta guardarlo en SistemaHotel).",
+            "Cambios guardados correctamente.",
             "Info",
             javax.swing.JOptionPane.INFORMATION_MESSAGE
     );

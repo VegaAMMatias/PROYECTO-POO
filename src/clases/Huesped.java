@@ -5,22 +5,24 @@ public class Huesped {
     private String dni;
     private String nombres;
     private String apellidos;
-    private String contacto; 
-    private String estado;  
+    private String contacto;
+    private String email;
+    private String estado;
 
     public Huesped() {
     }
 
-    public Huesped(String dni, String nombres, String apellidos, String contacto, String estado) {
+    public Huesped(String dni, String nombres, String apellidos, String contacto, String email, String estado) {
         this.dni = dni;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.contacto = contacto;
+        this.email = email;
         this.estado = estado;
     }
 
     public Huesped(String dni, String nombres, String apellidos, String contacto) {
-        this(dni, nombres, apellidos, contacto, "ACTIVO");
+        this(dni, nombres, apellidos, contacto, "", "ACTIVO");
     }
 
     public String getDni() {
@@ -53,6 +55,14 @@ public class Huesped {
 
     public void setContacto(String contacto) {
         this.contacto = contacto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getEstado() {

@@ -14,19 +14,31 @@ public class RegistroDeHuespedes extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistroDeHuespedes.class.getName());
     private clases.SistemaHotel sistema;
+    private Huesped huespedEditar;
+    private Runnable onGuardado;
     /**
      * Creates new form RegistroDeHuespedes
      */
 
     public RegistroDeHuespedes() {
-    this(new clases.SistemaHotel());
-}
+        this(new clases.SistemaHotel(), null, null);
+    }
 
-public RegistroDeHuespedes(clases.SistemaHotel sistema) {
-    initComponents();
-    setLocationRelativeTo(null);
-    this.sistema = sistema;
-}
+    public RegistroDeHuespedes(clases.SistemaHotel sistema, Huesped huespedEditar, Runnable onGuardado) {
+        initComponents();
+        setLocationRelativeTo(null);
+        this.sistema = sistema;
+        this.huespedEditar = huespedEditar;
+        this.onGuardado = onGuardado;
+
+        if (huespedEditar != null) {
+            txtDniHuesped.setText(huespedEditar.getDni());
+            txtNombresHuesped.setText(huespedEditar.getNombres());
+            txtApellidosHuesped.setText(huespedEditar.getApellidos());
+            txtTelefonoHuesped.setText(huespedEditar.getContacto());
+            txtEmailHuesped.setText(huespedEditar.getEmail());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -182,17 +194,49 @@ String dni = txtDniHuesped.getText().trim();
 
     // Aquí podrías validar que el DNI y teléfono sean numéricos si quieres.
 
-    Huesped nuevo = new Huesped(dni, nombres, apellidos, telefono, email);
+    if (huespedEditar == null) {
+        if (sistema.buscarHuespedPorDni(dni) != null) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Ya existe un huésped con ese DNI.",
+                    "Aviso",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
-    // Más adelante:
-    // sistema.gestionarHuespedes(nuevo, "REGISTRAR");
+        Huesped nuevo = new Huesped(dni, nombres, apellidos, telefono, email, "ACTIVO");
+        sistema.agregarHuesped(nuevo);
+    } else {
+        Huesped existente = sistema.buscarHuespedPorDni(dni);
+        if (existente != null && existente != huespedEditar) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "El DNI ingresado pertenece a otro huésped.",
+                    "Aviso",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        huespedEditar.setDni(dni);
+        huespedEditar.setNombres(nombres);
+        huespedEditar.setApellidos(apellidos);
+        huespedEditar.setContacto(telefono);
+        huespedEditar.setEmail(email);
+    }
+
+    if (onGuardado != null) {
+        onGuardado.run();
+    }
 
     javax.swing.JOptionPane.showMessageDialog(
             this,
-            "Huésped creado en memoria (falta guardarlo en SistemaHotel).",
+            "Cambios guardados correctamente.",
             "Info",
             javax.swing.JOptionPane.INFORMATION_MESSAGE
     );
+
     this.dispose();    }//GEN-LAST:event_btnGuardarHuespedActionPerformed
 
     private void btnLimpiarHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarHuespedActionPerformed
