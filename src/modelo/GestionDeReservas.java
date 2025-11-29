@@ -9,14 +9,21 @@ package modelo;
  * @author Chris
  */
 public class GestionDeReservas extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeReservas.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form GestionDeReservas
      */
     public GestionDeReservas() {
+        this(new clases.SistemaHotel());
+    }
+
+    public GestionDeReservas(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

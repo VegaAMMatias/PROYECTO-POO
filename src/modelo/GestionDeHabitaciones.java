@@ -13,7 +13,7 @@ public class GestionDeHabitaciones extends javax.swing.JFrame {
      * Creates new form GestionDeHabitaciones
      */
 public GestionDeHabitaciones() {
-    this(null); 
+    this(new SistemaHotel());
 }
 private void cargarTablaHabitaciones() {
     DefaultTableModel modelo = (DefaultTableModel) tblHabitaciones.getModel();

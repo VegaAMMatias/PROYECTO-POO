@@ -9,14 +9,21 @@ package modelo;
  * @author Chris
  */
 public class CheckInOut extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CheckInOut.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form CheckInOut
      */
     public CheckInOut() {
+        this(new clases.SistemaHotel());
+    }
+
+    public CheckInOut(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

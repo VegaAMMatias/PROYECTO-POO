@@ -9,14 +9,21 @@ package modelo;
  * @author Chris
  */
 public class GestionDeServiciosAdicionales extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionDeServiciosAdicionales.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form GestionDeServiciosAdicionales
      */
     public GestionDeServiciosAdicionales() {
+        this(new clases.SistemaHotel());
+    }
+
+    public GestionDeServiciosAdicionales(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

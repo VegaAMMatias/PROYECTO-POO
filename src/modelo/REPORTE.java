@@ -9,14 +9,21 @@ package modelo;
  * @author Chris
  */
 public class REPORTE extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(REPORTE.class.getName());
+    private clases.SistemaHotel sistema;
 
     /**
      * Creates new form REPORTE
      */
     public REPORTE() {
+        this(new clases.SistemaHotel());
+    }
+
+    public REPORTE(clases.SistemaHotel sistema) {
+        this.sistema = sistema;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
