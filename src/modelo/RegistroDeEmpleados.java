@@ -9,11 +9,15 @@ public class RegistroDeEmpleados extends javax.swing.JFrame {
     private clases.SistemaHotel sistema;
 
     public RegistroDeEmpleados() {
-        this(new clases.SistemaHotel());
+        this(new clases.SistemaHotel(100, 100, 100, 100, 100, 100));
     }
 
     public RegistroDeEmpleados(clases.SistemaHotel sistema) {
+        if (sistema == null) {
+            throw new IllegalArgumentException("El sistema no puede ser nulo");
+        }
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         this.sistema = sistema;
     }
@@ -40,7 +44,7 @@ public class RegistroDeEmpleados extends javax.swing.JFrame {
         btnGuardarEmpleado = new javax.swing.JButton();
         btnCancelarEmpleado = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("REGISTRO DE EMPLEADOS");
 
@@ -208,6 +212,7 @@ public class RegistroDeEmpleados extends javax.swing.JFrame {
     Empleado nuevo = new Empleado(dni, nombres, apellidos, rol);
     nuevo.setUsuario(usuario);
     nuevo.setPassword(clave);
+    nuevo.setEstado("ACTIVO");
     sistema.agregarEmpleado(nuevo);
 
     javax.swing.JOptionPane.showMessageDialog(
