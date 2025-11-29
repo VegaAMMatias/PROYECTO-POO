@@ -5,9 +5,10 @@ public class Empleado {
     private String dni;
     private String nombres;
     private String apellidos;
-    private String rol;       
-    private String password;  
-    private String estado;   
+    private String rol;
+    private String usuario;
+    private String password;
+    private String estado;
 
     public Empleado() {
     }
@@ -18,12 +19,21 @@ public class Empleado {
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.rol = rol;
+        this.usuario = dni; // Por defecto el usuario será el DNI
         this.password = password;
         this.estado = estado;
     }
 
     public Empleado(String dni, String nombres, String apellidos, String rol) {
         this(dni, nombres, apellidos, rol, "", "ACTIVO");
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getDni() {

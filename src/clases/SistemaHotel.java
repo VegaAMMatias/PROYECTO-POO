@@ -46,21 +46,25 @@ public class SistemaHotel {
         return null;
     }
         
-    public Empleado autenticarEmpleado(String dni, String password) {
-    if (empleados == null) {
+    public Empleado autenticarEmpleado(String usuario, String password) {
+        if (empleados == null) {
+            return null;
+        }
+
+        for (Empleado emp : empleados) {
+            if (emp == null || emp.getPassword() == null) {
+                continue;
+            }
+
+            boolean coincideUsuario = emp.getDni().equals(usuario)
+                    || (emp.getUsuario() != null && emp.getUsuario().equals(usuario));
+
+            if (coincideUsuario && emp.getPassword().equals(password)) {
+                return emp;
+            }
+        }
         return null;
     }
-
-    for (Empleado emp : empleados) {
-        if (emp != null
-                && emp.getDni().equals(dni)
-                && emp.getPassword() != null
-                && emp.getPassword().equals(password)) {
-            return emp; 
-        }
-    }
-    return null; 
-}
     
     public boolean agregarEmpleado(Empleado e) {
         for (int i = 0; i < empleados.length; i++) {
